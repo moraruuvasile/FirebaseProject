@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('C:\\Users\\Vasile\\AndroidStudioProjects\\Truly\\Kotlin\\FirebaseProject\\app\\src\\a.jks')
+            storePassword 'aaaaaa'
+            keyAlias 'a'
+            keyPassword 'aaaaaa'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
