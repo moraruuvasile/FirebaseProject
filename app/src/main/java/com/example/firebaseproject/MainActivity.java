@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                startExamplesActivity();
             }
         });
 
@@ -55,6 +56,11 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private void startLoginActivity() {
         startActivity(new Intent(this, LoginRegisterActivity.class));
         finish();
+    }
+
+    private void startExamplesActivity() {
+        Intent intent = new Intent(this, ExamplesActivity.class);
+        startActivity(intent);
     }
 
     @Override
