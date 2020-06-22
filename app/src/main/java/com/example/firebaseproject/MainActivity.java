@@ -18,20 +18,24 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener{
+public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener, NotesRecyclerAdapter.NoteListener {
     private static final String TAG = "MainActivity";
     private RecyclerView recyclerView;
- //   NotesRecyclerAdapter notesRecyclerAdapter;
+    NotesRecyclerAdapter notesRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +161,9 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     protected void onStop() {
         super.onStop();
         FirebaseAuth.getInstance().removeAuthStateListener(this);
+        if (notesRecyclerAdapter != null) {
+            notesRecyclerAdapter.stopListening();
+        }
     }
 
     @Override
@@ -165,5 +172,43 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
             startLoginActivity();
             return;
         }
+        initRecyclerView(firebaseAuth.getCurrentUser());
+    }
+
+    private void initRecyclerView(FirebaseUser user) {
+
+        Query query = FirebaseFirestore.getInstance()
+                .collection("notes")
+                .whereEqualTo("userId", user.getUid())
+                .orderBy("completed", Query.Direction.ASCENDING)
+                .orderBy("created", Query.Direction.DESCENDING);
+
+
+        FirestoreRecyclerOptions<Note> options = new FirestoreRecyclerOptions.Builder<Note>()
+                .setQuery(query, Note.class)
+                .build();
+        notesRecyclerAdapter = new NotesRecyclerAdapter(options, this);
+        recyclerView.setAdapter(notesRecyclerAdapter);
+        notesRecyclerAdapter.startListening();
+
+ //       ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+ //       itemTouchHelper.attachToRecyclerView(recyclerView);
+
+    }
+
+
+    @Override
+    public void handleCheckChanged(boolean isChecked, DocumentSnapshot snapshot) {
+
+    }
+
+    @Override
+    public void handleEditNote(DocumentSnapshot snapshot) {
+
+    }
+
+    @Override
+    public void handleDeleteItem(DocumentSnapshot snapshot) {
+
     }
 }
