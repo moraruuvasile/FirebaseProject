@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        recyclerView = findViewById(R.id.mainRecycler);
+        recyclerView = findViewById(R.id.recyclerView);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
 
@@ -153,9 +154,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
     @Override
     protected void onStart() {
-        super.onStart();
-        FirebaseAuth.getInstance().addAuthStateListener(this);
-    }
+        super.onStart(); }
 
     @Override
     protected void onStop() {
@@ -179,9 +178,9 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         Query query = FirebaseFirestore.getInstance()
                 .collection("notes")
-                .whereEqualTo("userId", user.getUid())
-                .orderBy("completed", Query.Direction.ASCENDING)
-                .orderBy("created", Query.Direction.DESCENDING);
+                .whereEqualTo("userId", user.getUid());
+//                .orderBy("completed", Query.Direction.ASCENDING)
+//                .orderBy("created", Query.Direction.DESCENDING);
 
 
         FirestoreRecyclerOptions<Note> options = new FirestoreRecyclerOptions.Builder<Note>()
@@ -189,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 .build();
         notesRecyclerAdapter = new NotesRecyclerAdapter(options, this);
         recyclerView.setAdapter(notesRecyclerAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         notesRecyclerAdapter.startListening();
 
  //       ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
