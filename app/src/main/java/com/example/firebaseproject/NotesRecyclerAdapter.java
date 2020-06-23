@@ -56,10 +56,10 @@ public class NotesRecyclerAdapter extends FirestoreRecyclerAdapter<Note, NotesRe
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                     DocumentSnapshot snapshot = getSnapshots().getSnapshot(getAdapterPosition());
-                    Note note = getItem(getAdapterPosition());
-                    if (note.getCompleted() != isChecked) {
+ //                   Note note = getItem(getAdapterPosition());//todo sa verific ulterior
+ //                   if (note.getCompleted() != isChecked) { //todo sa verific ulterior
                         noteListener.handleCheckChanged(isChecked, snapshot);
-                    }
+  //                  }
                 }
             });
             itemView.setOnClickListener(new View.OnClickListener() {
